@@ -1,5 +1,5 @@
 # GPT4-discord-bot
-1`pip install -r requirements.txt`。
+1`pip install -r requirements.txt`でパッケージのインポート。
 2`.env`にDiscord and OpenAI APIを書き込みます。
 3. `python discoed_GPT_bot.py`を使用してボットを実行します。
 
