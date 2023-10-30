@@ -11,6 +11,7 @@ load_dotenv()
 # Discord BotのトークンとOpenAI APIキーを環境変数から取得
 TOKEN = os.getenv('DISCORD_TOKEN')
 openai.api_key = os.getenv('OPENAI_API_KEY')
+ORG_ID = os.getenv('OPENAI_ORG_ID')  # organization IDを環境変数から取得
 
 # Discord Botのクライアントを作成
 client = discord.Client(intents=discord.Intents.all())
@@ -30,11 +31,11 @@ async def on_message(message):
     if message.author == client.user or not isinstance(message.channel, discord.Thread):
         return
 
-    # スレッドIDをキーとして会話の履歴を管理
-    thread_id = message.channel.id
-    conversation_history = os.environ.get(f"CONVERSATION_HISTORY_{thread_id}", "")
-
-    conversation_history += f"User: {message.content}\n"
+    # スレッドの会話履歴を取得
+    conversation_history = ""
+    async for message_in_thread in message.channel.history(oldest_first=True):
+        author = "User" if message_in_thread.author != client.user else "Assistant"
+        conversation_history += f"{author}: {message_in_thread.content}\n"
 
     # トークン数を確認
     token_count = len(enc.encode(conversation_history))
@@ -47,18 +48,17 @@ async def on_message(message):
         char_index = sum(len(token) for token in tokens[:new_start_index])
         conversation_history = conversation_history[char_index:]
 
-    # OpenAI APIを使用して、メッセージに対する応答を生成する
-    response = openai.ChatCompletion.create(
-        model="gpt-4",
-        messages=[
-            {"role": "system", "content": "You are a helpful assistant."},
-            {"role": "user", "content": conversation_history},
-        ]
-    )
-
-    # OpenAIからの応答を会話の履歴に追加し、環境変数を更新
-    conversation_history += f"Assistant: {response['choices'][0]['message']['content']}\n"
-    os.environ[f"CONVERSATION_HISTORY_{thread_id}"] = conversation_history
+    # タイピングインジケータを表示する
+    async with message.channel.typing():
+        # OpenAI APIを使用して、メッセージに対する応答を生成する
+        response = openai.ChatCompletion.create(
+            model="gpt-4",
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant."},
+                {"role": "user", "content": conversation_history},
+            ],
+            headers={"OpenAI-Organization": ORG_ID}  # organization IDをヘッダーに追加
+        )
 
     # 応答を送信する
     await message.channel.send(response['choices'][0]['message']['content'])
