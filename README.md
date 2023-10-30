@@ -6,5 +6,6 @@
 ## 環境変数
 - `DISCORD_TOKEN`: Your Discord bot token.
 - `OPENAI_API_KEY`: Your OpenAI API key.
+- `OPENAI_ORG_ID`:Your organization API key.
 ## 使い方
 通常のメッセージには応答せずスレッド上のメッセージにしか応答しません。各スレッドごとに履歴を取得して会話をします。
