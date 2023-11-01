@@ -1,3 +1,4 @@
 discord.py
 python-dotenv
 openai
+nest_asyncio==1.5.7
