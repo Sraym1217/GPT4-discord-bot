@@ -40,12 +40,14 @@ async def on_message(message):
         char_to_remove = char_count - 7900  # 保持する文字数を調整
         conversation_history = conversation_history[char_to_remove:]
 
-    # タイピングインジケータを表示する
-    typing_task = None
-    try:
-        # タイピングインジケータを表示する（非同期タスクとして）
-        typing_task = client.loop.create_task(message.channel.typing())
+    async def keep_typing(channel):
+        while True:
+            await channel.typing()
+            await asyncio.sleep(5)
 
+    typing_task = client.loop.create_task(keep_typing(message.channel))
+
+    try:
         # OpenAI APIを使用して、メッセージに対する応答を生成する
         response = await openai.ChatCompletion.create(
             model="gpt-4",
