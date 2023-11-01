@@ -2,4 +2,4 @@ python-dotenv
 discord.py==2.3.2
 openai
 nest_asyncio==1.5.7
-Flask==2.0.2
+
