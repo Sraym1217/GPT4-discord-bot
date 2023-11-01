@@ -2,3 +2,4 @@ discord.py
 python-dotenv
 openai
 nest_asyncio==1.5.7
+tiktoken==0.5.1
