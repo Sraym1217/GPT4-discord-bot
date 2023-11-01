@@ -1,6 +1,7 @@
 import discord
 import openai
 import nest_asyncio
+import asyncio
 import os
 from dotenv import load_dotenv
 
@@ -15,6 +16,11 @@ ORG_ID = os.getenv('OPENAI_ORG_ID')  # organization IDを環境変数から取�
 # Discord Botのクライアントを作成
 client = discord.Client(intents=discord.Intents.all())
 
+async def keep_typing(channel):
+    while True:
+        await channel.typing()
+        await asyncio.sleep(4)  # 4秒待ってから再度 typing 状態を送信
+        
 # Botが起動したときの処理
 @client.event
 async def on_ready():
@@ -41,12 +47,8 @@ async def on_message(message):
         conversation_history = conversation_history[char_to_remove:]
         conversation_history += "アシスタント:"
 
-    async def keep_typing(channel):
-        while True:
-            await channel.typing()
-            await asyncio.sleep(5)
-
-    typing_task = client.loop.create_task(keep_typing(message.channel))
+# タイピング状態を維持するタスクを開始
+    typing_task = asyncio.ensure_future(keep_typing(message.channel))
 
     try:
         # OpenAI APIを使用して、メッセージに対する応答を生成する
@@ -62,8 +64,7 @@ async def on_message(message):
         # 応答を送信する
         await message.channel.send(response['choices'][0]['message']['content'])
     finally:
-        if typing_task:
-            typing_task.cancel()
+        typing_task.cancel()  # タスクをキャンセル
 
 # Discord Botを起動する
 nest_asyncio.apply()
