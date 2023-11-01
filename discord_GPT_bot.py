@@ -39,6 +39,7 @@ async def on_message(message):
         # 文字数が7900を超えている場合、古い会話履歴を削除
         char_to_remove = char_count - 7900  # 保持する文字数を調整
         conversation_history = conversation_history[char_to_remove:]
+        conversation_history += "アシスタント:"
 
     async def keep_typing(channel):
         while True:
