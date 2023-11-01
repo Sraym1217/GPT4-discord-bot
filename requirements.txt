@@ -1,6 +1,5 @@
---upgrade pip
 python-dotenv
-discord.py==2.3.2
+discord.py==2.0.0
 openai
 nest_asyncio==1.5.7
 
