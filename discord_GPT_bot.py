@@ -2,7 +2,6 @@ import discord
 import openai
 import nest_asyncio
 import os
-import tiktoken
 from dotenv import load_dotenv
 
 # 環境変数をロード
@@ -15,9 +14,6 @@ ORG_ID = os.getenv('OPENAI_ORG_ID')  # organization IDを環境変数から取�
 
 # Discord Botのクライアントを作成
 client = discord.Client(intents=discord.Intents.all())
-
-# tiktokenエンコーダを初期化
-enc = tiktoken.get_encoding("cl100k_base")
 
 # Botが起動したときの処理
 @client.event
@@ -37,16 +33,12 @@ async def on_message(message):
         author = "User" if message_in_thread.author != client.user else "Assistant"
         conversation_history += f"{author}: {message_in_thread.content}\n"
 
-    # トークン数を確認
-    token_count = len(enc.encode(conversation_history))
-    if token_count > 7500:
-        # トークン数が7500を超えている場合、古い会話履歴を削除
-        tokens_to_remove = token_count - 7500 + 1000  # 保持するトークン数を調整
-        tokens = enc.encode(conversation_history)
-        new_start_index = tokens_to_remove
-        # トークンのインデックスを文字のインデックスに変換
-        char_index = sum(len(token) for token in tokens[:new_start_index])
-        conversation_history = conversation_history[char_index:]
+     # 文字数を確認
+    char_count = len(conversation_history)
+    if char_count > 7900:
+        # 文字数が7900を超えている場合、古い会話履歴を削除
+        char_to_remove = char_count - 7900  # 保持する文字数を調整
+        conversation_history = conversation_history[char_to_remove:]
 
     # タイピングインジケータを表示する
     async with message.channel.typing():
