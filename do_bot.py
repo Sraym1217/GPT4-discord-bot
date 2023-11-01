@@ -1,6 +1,6 @@
 from flask import Flask
 import threading
-import discord_GPT_bot  # あなたのDiscordボットのコードをインポートする
+import discord_GPT_bot  # Discordボットのコードをインポートする
 
 app = Flask(__name__)
 
@@ -15,4 +15,4 @@ def run_bot():
 if __name__ == '__main__':
     bot_thread = threading.Thread(target=run_bot)
     bot_thread.start()
-    app.run(host='0.0.0.0', port=80)  # Renderはポート80を推奨しています
+    app.run(host='0.0.0.0', port=80)
