@@ -40,6 +40,7 @@ async def on_message(message):
     # メッセージがBot自身によるもの、またはスレッド外のメッセージであれば無視
     if message.author == client.user or not isinstance(message.channel, discord.Thread):
         return
+    print(f"Received message: {message.content} from {message.author}")
 
     # スレッドの会話履歴を取得
     conversation_history = ""
