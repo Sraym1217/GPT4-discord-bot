@@ -5,6 +5,13 @@ import asyncio
 import os
 from dotenv import load_dotenv
 from keep_alive import keep_alive
+import logging
+
+logger = logging.getLogger('discord')
+logger.setLevel(logging.DEBUG)
+handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w')
+handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
+logger.addHandler(handler)
 
 # 環境変数をロード
 load_dotenv()
@@ -47,20 +54,27 @@ async def on_message(message):
         char_to_remove = char_count - 7900  # 保持する文字数を調整
         conversation_history = conversation_history[char_to_remove:]
 
-    # タイピングインジケータを表示する
-    async with message.channel.typing():
+    typing_task = asyncio.ensure_future(keep_typing(message.channel))
+
+    try:
         # OpenAI APIを使用して、メッセージに対する応答を生成する
-        response = openai.ChatCompletion.create(
-            model="gpt-4",
-            messages=[
-                {"role": "system", "content": "You are a helpful assistant."},
-                {"role": "user", "content": conversation_history},
-            ],
-            headers={"OpenAI-Organization": ORG_ID}  # organization IDをヘッダーに追加
+        # run_in_executor を使用して同期関数を非同期に実行する
+        response = await client.loop.run_in_executor(
+            None,  # デフォルトのエグゼキュータを使用
+            lambda: openai.ChatCompletion.create(
+                model="gpt-4",
+                messages=[
+                    {"role": "system", "content": "You are a helpful assistant."},
+                    {"role": "user", "content": conversation_history},
+                ],
+                headers={"OpenAI-Organization": ORG_ID}
+            )
         )
 
-    # 応答を送信する
-    await message.channel.send(response['choices'][0]['message']['content'])
+        # 応答を送信する
+        await message.channel.send(response['choices'][0]['message']['content'])
+    finally:
+        typing_task.cancel()  # タスクをキャンセル
 
 # Discord Botを起動する
 nest_asyncio.apply()
