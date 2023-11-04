@@ -76,8 +76,6 @@ async def on_message(message):
         # 応答を送信する
         response_content = response['choices'][0]['message']['content']
         await message.channel.send(f"[{timestamp}] Response: '{response_content}'")
-        # 応答を送信
-        await message.channel.send(response_content)
     except Exception as e:
         # エラー情報を送信
         await message.channel.send(f"[{timestamp}] Error: {e}")
