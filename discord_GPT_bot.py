@@ -47,20 +47,29 @@ async def on_message(message):
         conversation_history = conversation_history[char_to_remove:]
         conversation_history += "アシスタント:"
 
-     # タイピングインジケータを表示する
-    async with message.channel.typing():
+    # タイピング状態を維持するタスクを開始
+    typing_task = asyncio.ensure_future(keep_typing(message.channel))
+
+    try:
         # OpenAI APIを使用して、メッセージに対する応答を生成する
-        response = openai.ChatCompletion.create(
-            model="gpt-4",
-            messages=[
-                {"role": "system", "content": "You are a helpful assistant."},
-                {"role": "user", "content": conversation_history},
-            ],
-            headers={"OpenAI-Organization": ORG_ID}  # organization IDをヘッダーに追加
+        # run_in_executor を使用して同期関数を非同期に実行する
+        response = await client.loop.run_in_executor(
+            None,  # デフォルトのエグゼキュータを使用
+            lambda: openai.ChatCompletion.create(
+                model="gpt-4",
+                messages=[
+                    {"role": "system", "content": "You are a helpful assistant."},
+                    {"role": "user", "content": conversation_history},
+                ],
+                headers={"OpenAI-Organization": ORG_ID}
+            )
         )
 
-    # 応答を送信する
-    await message.channel.send(response['choices'][0]['message']['content'])
+        # 応答を送信する
+        await message.channel.send(response['choices'][0]['message']['content'])
+    finally:
+        typing_task.cancel() 
+
 
 # Discord Botを起動する
 nest_asyncio.apply()
