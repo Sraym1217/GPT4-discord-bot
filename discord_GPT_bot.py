@@ -4,6 +4,7 @@ import nest_asyncio
 import asyncio
 import os
 from dotenv import load_dotenv
+from keep_alive import keep_alive
 
 # 環境変数をロード
 load_dotenv()
