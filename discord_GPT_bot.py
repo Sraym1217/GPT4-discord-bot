@@ -68,7 +68,7 @@ async def on_message(message):
         )
 
         # 応答を送信する
-        await message.channel.send(response.choices[0].message.content)
+        await message.channel.send(response['choices'][0]['message']['content'])
     finally:
         typing_task.cancel() 
 
