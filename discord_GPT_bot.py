@@ -73,4 +73,5 @@ async def on_message(message):
 
 # Discord Botを起動する
 nest_asyncio.apply()
+keep_alive()
 client.run(TOKEN)
