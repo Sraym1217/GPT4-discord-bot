@@ -6,7 +6,7 @@ import os
 from dotenv import load_dotenv
 from keep_alive import keep_alive
 import logging
-
+import datetime
 logger = logging.getLogger('discord')
 logger.setLevel(logging.DEBUG)
 handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w')
@@ -37,6 +37,7 @@ async def on_ready():
 # メッセージが送信されたときの処理
 @client.event
 async def on_message(message):
+    timestamp = datetime.datetime.now().isoformat()
     # メッセージがBot自身によるもの、またはスレッド外のメッセージであれば無視
     if message.author == client.user or not isinstance(message.channel, discord.Thread):
         return
@@ -73,8 +74,13 @@ async def on_message(message):
         )
 
         # 応答を送信する
-        await message.channel.send(response['choices'][0]['message']['content']+"k")
-        await message.channel.send(f"Received message: {message.content} from {message.author}")
+        response_content = response['choices'][0]['message']['content']
+        await message.channel.send(f"[{timestamp}] Response: '{response_content}'")
+        # 応答を送信
+        await message.channel.send(response_content)
+    except Exception as e:
+        # エラー情報を送信
+        await message.channel.send(f"[{timestamp}] Error: {e}")
     finally:
         typing_task.cancel()  # タスクをキャンセル
 
