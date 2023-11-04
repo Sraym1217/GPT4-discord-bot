@@ -7,11 +7,6 @@ from dotenv import load_dotenv
 from keep_alive import keep_alive
 import logging
 import datetime
-logger = logging.getLogger('discord')
-logger.setLevel(logging.DEBUG)
-handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w')
-handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
-logger.addHandler(handler)
 
 # 環境変数をロード
 load_dotenv()
@@ -41,8 +36,6 @@ async def on_message(message):
     # メッセージがBot自身によるもの、またはスレッド外のメッセージであれば無視
     if message.author == client.user or not isinstance(message.channel, discord.Thread):
         return
-    print(f"Received message: {message.content} from {message.author}")
-
     # スレッドの会話履歴を取得
     conversation_history = ""
     async for message_in_thread in message.channel.history(oldest_first=True):
