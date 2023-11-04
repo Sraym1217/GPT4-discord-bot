@@ -76,6 +76,5 @@ async def on_message(message):
         typing_task.cancel()  # タスクをキャンセル
 
 # Discord Botを起動する
-nest_asyncio.apply()
 keep_alive()
 client.run(TOKEN)
