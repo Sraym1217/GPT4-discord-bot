@@ -44,9 +44,9 @@ async def on_message(message):
 
      # 文字数を確認
     char_count = len(conversation_history)
-    if char_count > 7900:
+    if char_count > 127900:
         # 文字数が7900を超えている場合、古い会話履歴を削除
-        char_to_remove = char_count - 7900  # 保持する文字数を調整
+        char_to_remove = char_count - 127900  # 保持する文字数を調整
         conversation_history = conversation_history[char_to_remove:]
 
     typing_task = asyncio.ensure_future(keep_typing(message.channel))
