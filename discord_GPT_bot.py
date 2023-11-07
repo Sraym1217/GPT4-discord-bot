@@ -57,10 +57,10 @@ async def on_message(message):
         response = await client.loop.run_in_executor(
             None,  # デフォルトのエグゼキュータを使用
             lambda: openai.ChatCompletion.create(
-                model="gpt-4",
+                model="gpt-4-1106-preview",
                 messages=[
                     {"role": "system", "content": "You are a helpful assistant."},
-                    {"role": "user", "content": conversation_history},
+                    {"role": "user", "content": f"{conversation_history} \n Assistant:"},
                 ],
                 headers={"OpenAI-Organization": ORG_ID}
             )
