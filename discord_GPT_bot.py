@@ -16,7 +16,7 @@ load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 api_key = os.getenv('OPENAI_API_KEY')
 ORG_ID = os.getenv('OPENAI_ORG_ID')  # organization IDを環境変数から取得
-client = OpenAI(api_key)
+client = OpenAI()
 
 # Discord Botのクライアントを作成
 client = discord.Client(intents=discord.Intents.all())
