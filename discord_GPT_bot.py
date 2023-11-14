@@ -1,5 +1,6 @@
 import discord
 import openai
+from openai import OpenAI
 import nest_asyncio
 import asyncio
 import os
@@ -13,8 +14,9 @@ load_dotenv()
 
 # Discord BotのトークンとOpenAI APIキーを環境変数から取得
 TOKEN = os.getenv('DISCORD_TOKEN')
-openai.api_key = os.getenv('OPENAI_API_KEY')
+api_key = os.getenv('OPENAI_API_KEY')
 ORG_ID = os.getenv('OPENAI_ORG_ID')  # organization IDを環境変数から取得
+client = OpenAI(api_key)
 
 # Discord Botのクライアントを作成
 client = discord.Client(intents=discord.Intents.all())
@@ -45,7 +47,7 @@ async def on_message(message):
      # 文字数を確認
     char_count = len(conversation_history)
     if char_count > 127900:
-        # 文字数が7900を超えている場合、古い会話履歴を削除
+        # 文字数が127900を超えている場合、古い会話履歴を削除
         char_to_remove = char_count - 127900  # 保持する文字数を調整
         conversation_history = conversation_history[char_to_remove:]
 
@@ -56,7 +58,7 @@ async def on_message(message):
         # run_in_executor を使用して同期関数を非同期に実行する
         response = await client.loop.run_in_executor(
             None,  # デフォルトのエグゼキュータを使用
-            lambda: openai.ChatCompletion.create(
+            lambda: lient.chat.completions.create(
                 model="gpt-4-1106-preview",
                 messages=[
                     {"role": "system", "content": "You are a helpful assistant."},
@@ -67,7 +69,7 @@ async def on_message(message):
         )
 
         # 応答を送信する
-        await message.channel.send(response['choices'][0]['message']['content'])
+        await message.channel.send(response.choices[0].message.content)
     finally:
         typing_task.cancel()  # タスクをキャンセル
 
