@@ -16,7 +16,7 @@ load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 api_key = os.getenv('OPENAI_API_KEY')
 ORG_ID = os.getenv('OPENAI_ORG_ID')  # organization IDを環境変数から取得
-client = OpenAI()
+client_open = OpenAI()
 
 # Discord Botのクライアントを作成
 client = discord.Client(intents=discord.Intents.all())
@@ -58,7 +58,7 @@ async def on_message(message):
         # run_in_executor を使用して同期関数を非同期に実行する
         response = await client.loop.run_in_executor(
             None,  # デフォルトのエグゼキュータを使用
-            lambda: lient.chat.completions.create(
+            lambda: client_open.chat.completions.create(
                 model="gpt-4-1106-preview",
                 messages=[
                     {"role": "system", "content": "You are a helpful assistant."},
