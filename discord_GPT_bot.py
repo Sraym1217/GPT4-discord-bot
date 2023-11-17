@@ -64,7 +64,6 @@ async def on_message(message):
                     {"role": "system", "content": "You are a helpful assistant."},
                     {"role": "user", "content": f"{conversation_history} \n Assistant:"},
                 ],
-                headers={"OpenAI-Organization": ORG_ID}
             )
         )
 
