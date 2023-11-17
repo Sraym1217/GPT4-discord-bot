@@ -59,7 +59,7 @@ async def on_message(message):
         response = await client.loop.run_in_executor(
             None,  # デフォルトのエグゼキュータを使用
             lambda: client_open.chat.completions.create(
-                model="gpt-4-1106-preview",
+                model="gpt-4",
                 messages=[
                     {"role": "system", "content": "You are a helpful assistant."},
                     {"role": "user", "content": f"{conversation_history} \n Assistant:"},
