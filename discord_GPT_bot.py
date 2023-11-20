@@ -13,10 +13,10 @@ import datetime
 load_dotenv()
 
 # Discord BotのトークンとOpenAI APIキーを環境変数から取得
+# organization IDを環境変数から取得
 TOKEN = os.getenv('DISCORD_TOKEN')
 client_open = OpenAI(api_key = os.getenv('OPENAI_API_KEY'))
-ORG_ID = os.getenv('OPENAI_ORG_ID')  # organization IDを環境変数から取得
-
+ORG_ID = os.getenv('OPENAI_ORG_ID')
 
 # Discord Botのクライアントを作成
 client = discord.Client(intents=discord.Intents.all())
