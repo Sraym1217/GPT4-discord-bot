@@ -9,7 +9,7 @@ from keep_alive import keep_alive
 import logging
 import datetime
 
-# 環境変数をロード
+# 環境変数をロードする
 load_dotenv()
 
 # Discord BotのトークンとOpenAI APIキーを環境変数から取得
