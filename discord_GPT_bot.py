@@ -18,7 +18,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 client_open = OpenAI(api_key = os.getenv('OPENAI_API_KEY'))
 ORG_ID = os.getenv('OPENAI_ORG_ID')
 
-# Discord Botのクライアントを作成
+# Discord Botのクライアントを作成する
 client = discord.Client(intents=discord.Intents.all())
 
 async def keep_typing(channel):
