@@ -38,11 +38,12 @@ async def on_message(message):
     # メッセージがBot自身によるもの、またはスレッド外のメッセージであれば無視
     if message.author == client.user or not isinstance(message.channel, discord.Thread):
         return
-    # スレッドの会話履歴を取得
+    # スレッドの会話履歴を取得（最新の20件のみ）
     conversation_history = ""
-    async for message_in_thread in message.channel.history(oldest_first=True):
+    async for message_in_thread in message.channel.history(limit=20, oldest_first=False):
         author = "User" if message_in_thread.author != client.user else "Assistant"
-        conversation_history += f"{author}: {message_in_thread.content}\n"
+        conversation_history = f"{author}: {message_in_thread.content}\n" + conversation_history
+
 
      # 文字数を確認
     char_count = len(conversation_history)
