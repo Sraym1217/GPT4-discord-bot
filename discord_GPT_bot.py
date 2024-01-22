@@ -38,6 +38,8 @@ async def on_message(message):
     if message.author == client.user or not isinstance(message.channel, discord.Thread):
         return
 
+    typing_task = asyncio.create_task(keep_typing(message.channel))
+
     try:
         # スレッドの会話履歴を取得（最新の20件のみ）
         conversation_history = ""
@@ -67,6 +69,8 @@ async def on_message(message):
             rate_limit_reset_after = e.response.headers.get('X-RateLimit-Reset-After')
             print(f"Rate limit scope: {rate_limit_scope}")
             print(f"Remaining: {rate_limit_remaining}, Reset after: {rate_limit_reset_after} seconds")
+    finally:
+        typing_task.cancel()
 
 # Discord Botを起動する
 keep_alive()
